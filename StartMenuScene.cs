@@ -32,6 +32,8 @@ namespace Quicksilver {
                 ConfirmButton.Text = "Join";
                 IPTextField.Text = "";
                 IPTextField.Editable = true;
+                NameTextField.Text = "";
+                NameTextField.Editable = true;
                 ActiveUIElements = [ExitPopUpButton, IPTextField, PortTextField, PasswordTextField, NameTextField, ConfirmButton];
             });
             HostButton = new UIButton(new FloatRect(0, +40, 320, 40), UIAlignment.Center, "Host Chatroom", 20, async () => {
@@ -40,6 +42,8 @@ namespace Quicksilver {
                 ConfirmButton.Text = "Host";
                 IPTextField.Text = ip;
                 IPTextField.Editable = false;
+                NameTextField.Text = "HOST";
+                NameTextField.Editable = false;
                 ActiveUIElements = [ExitPopUpButton, IPTextField, PortTextField, PasswordTextField, NameTextField, ConfirmButton];
             });
             ExitPopUpButton = new UIButton(new FloatRect(-60, 60, 60, 60), UIAlignment.TopRight, "X", 40, () => {
@@ -56,7 +60,7 @@ namespace Quicksilver {
                     Program.Scene = new ClientChatScene(IPTextField.Text, Convert.ToInt32(PortTextField.Text), PasswordTextField.Text, NameTextField.Text);
                 }
                 if (HostPopUp) {
-                    Program.Scene = new HostChatScene(Convert.ToInt32(PortTextField.Text), PasswordTextField.Text, NameTextField.Text);
+                    Program.Scene = new HostChatScene(Convert.ToInt32(PortTextField.Text), PasswordTextField.Text);
                 }
             });
             ActiveUIElements = [JoinButton, HostButton];

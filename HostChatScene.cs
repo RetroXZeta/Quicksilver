@@ -16,7 +16,6 @@ namespace Quicksilver {
     public class HostChatScene : WindowScene {
         public TcpListener Server {get; init;}
         public byte[] Password {get; init;}
-        public string Username {get; init;}
 
         public int ClientCount {get; private set;} = 0;
         public List<long> ClientIDs {get; init;} = new List<long>();
@@ -26,10 +25,9 @@ namespace Quicksilver {
 
         public List<UIElement> ActiveUIElements {get; private set;} = new List<UIElement>();
 
-        public HostChatScene(int port, string password, string username) {
+        public HostChatScene(int port, string password) {
             Server = new TcpListener(IPAddress.Any, port);
             Password = Cryptography.HashBytes(password);
-            Username = username;
 
             Server.Start();
 
