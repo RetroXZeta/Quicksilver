@@ -184,15 +184,12 @@ namespace Quicksilver {
                     }
                     case OpCode.MessageBegin: {
                         // Console.WriteLine("Beginning message...");
-                        List<byte> bytes = new List<byte>();
+                        List<byte> bytes = new List<byte>(1024);
                         while (true) {
-                            byte[] msgBuffer = new byte[1024];
-                            int msgLength = socket.Receive(msgBuffer);
-                            if (msgBuffer[msgLength-1] == 1) {
-                                if (msgLength > 1) { bytes.AddRange(msgBuffer[..(msgLength-1)]); }
-                                break;
-                            }
-                            bytes.AddRange(msgBuffer[..msgLength]);
+                            byte[] msgBuffer = new byte[1];
+                            socket.Receive(msgBuffer);
+                            if (msgBuffer[0] == 1) { break; }
+                            bytes.Add(msgBuffer[0]);
                         }
 
                         mutex.ReleaseMutex();
@@ -218,15 +215,12 @@ namespace Quicksilver {
                         break;
                     }
                     case OpCode.FileBegin: {
-                        List<byte> bytes = new List<byte>();
+                        List<byte> bytes = new List<byte>(1024);
                         while (true) {
-                            byte[] msgBuffer = new byte[1024];
+                            byte[] msgBuffer = new byte[1];
                             int msgLength = socket.Receive(msgBuffer);
-                            if (msgBuffer[msgLength-1] == 1) {
-                                if (msgLength > 1) { bytes.AddRange(msgBuffer[..(msgLength-1)]); }
-                                break;
-                            }
-                            bytes.AddRange(msgBuffer[..msgLength]);
+                            if (msgBuffer[0] == 1) { break; }
+                            bytes.Add(msgBuffer[0]);
                         }
 
                         mutex.ReleaseMutex();

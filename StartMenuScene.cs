@@ -5,7 +5,6 @@ using System.Net.Http;
 using SFML.System;
 using SFML.Window;
 using SFML.Graphics;
-using System.Text;
 
 #pragma warning disable 8602
 #pragma warning disable 8604
@@ -64,10 +63,6 @@ namespace Quicksilver {
                 }
             });
             ActiveUIElements = [JoinButton, HostButton];
-            /*Thread t1 = new Thread(Shitfuck1);
-            Thread t2 = new Thread(Shitfuck2);
-            t1.Start();
-            t2.Start();*/
         }
 
         private Vector2f mousePos;
@@ -124,18 +119,5 @@ namespace Quicksilver {
                 element.OnKeyPressed(e);
             }
         }
-
-        /*public void Shitfuck1() {
-            for (int i = 1; i <= 30; ++i) {
-                Thread.Sleep(1000);
-                Console.WriteLine($"Shitfuck 1: {i}");
-            }
-        }
-        public void Shitfuck2() {
-            for (int i = 1; i <= 30; ++i) {
-                Thread.Sleep(1000);
-                Console.WriteLine($"Shitfuck 2: {i}");
-            }
-        }*/
     }
 }

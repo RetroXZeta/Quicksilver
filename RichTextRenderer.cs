@@ -70,6 +70,14 @@ namespace Quicksilver {
                             string[] args = fullcmd[(split+1)..].Split(',');
                             switch (cmd) {
                                 case "color": {
+                                    if (args.Length == 3) {
+                                        bool valid = byte.TryParse(args[0], out byte r);
+                                        valid = byte.TryParse(args[1], out byte g) ? valid : false;
+                                        valid = byte.TryParse(args[2], out byte b) ? valid : false;
+                                        if (!valid) { break; }
+                                        color = new Color(r, g, b);
+                                        break;
+                                    }
                                     if (args.Length != 1) { break; }
                                     switch (args[0]) {
                                         case "white": color = Color.White; break;
@@ -104,11 +112,9 @@ namespace Quicksilver {
                                 }
                                 case "wave": {
                                     if (args.Length != 3) { break; }
-                                    bool valid = true;
-                                    float wamp, wfreq, wphase;
-                                    if (!float.TryParse(args[0], out wamp)) { valid = false; }
-                                    if (!float.TryParse(args[1], out wfreq)) { valid = false; }
-                                    if (!float.TryParse(args[2], out wphase)) { valid = false; }
+                                    bool valid = float.TryParse(args[0], out float wamp);
+                                    valid = float.TryParse(args[1], out float wfreq) ? valid : false;
+                                    valid = float.TryParse(args[2], out float wphase) ? valid : false;
                                     if (valid) {
                                         waveAmplitude = wamp;
                                         waveFrequency = wfreq == 0 ? 1 : wfreq;
