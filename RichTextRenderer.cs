@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text;
 using SFML.Graphics;
 using SFML.System;
@@ -59,7 +60,15 @@ namespace Quicksilver {
                                         case "cyan": color = Color.Cyan; break;
                                         case "magenta": color = Color.Magenta; break;
                                         case "black": color = Color.Black; break;
-                                        default: break;
+                                        case "gray": case "grey": color = new Color(128, 128, 128); break;
+                                        default:
+                                            if (args[0].Length != 6) { break; }
+                                            uint hex;
+                                            bool valid = uint.TryParse(args[0], NumberStyles.HexNumber, new NumberFormatInfo(), out hex);
+                                            if (!valid) { break; }
+                                            hex = hex * 256 + 255;
+                                            color = new Color(hex);
+                                            break;
                                     }
                                     break;
                                 }

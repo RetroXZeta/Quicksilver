@@ -216,7 +216,7 @@ namespace Quicksilver {
             width = window.GetView().Size.X;
             height = window.GetView().Size.Y;
 
-            float msgtextheight = new Text(MessageTextField.Text, Program.Font, 20).GetGlobalBounds().Height + 20;
+            float msgtextheight = RichTextRenderer.Height(MessageTextField.Text, 20, 640.0f, 20.0f) + 20;
             if (msgtextheight < 60) { msgtextheight = 60; }
 
             MessageTextField.Bounds = new FloatRect(0, -20, width-40, msgtextheight);
