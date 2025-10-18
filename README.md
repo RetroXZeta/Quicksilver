@@ -26,6 +26,6 @@ Quicksilver includes some special features. Text can be formatted with in-line t
 
 - `{bold}` - Toggles bold text.
 - `{bold:true/false}` - Turns bold text on or off manually.
-- `{color:color}` - Sets the color of the text. Currently accepted color arguments are `white`, `red`, `green`, `blue`, `yellow`, `cyan`, `magenta`, and `black`. TODO: Add RGB Hex color support.
+- `{color:color}` - Sets the color of the text. Currently accepted color arguments are `white`, `red`, `green`, `blue`, `yellow`, `cyan`, `magenta`, and `black`.
 - `{wave:amplitude,frequency,phase}` - Gives text a wavy effect. The amplitude is measured in pixels, the frequency is measured as the duration in seconds of a wave for a single character, and the phase denotes the difference in phase between consecutive characters.
 - `{glyph:glyph}` - Inserts a custom image into the text. This image is referenced by its name in the Glyphs folder, and must exist in that folder for all users to be rendered by all users. For example, assuming all users have the default Glyphs folder, `{glyph:thumbsup}` will generate a thumbs up glyph. Custom glyphs can be added to the Glyphs folder.
