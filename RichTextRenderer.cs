@@ -34,6 +34,26 @@ namespace Quicksilver {
                         position.Y += linespace;
                         break;
                     }
+                    case "\\": {
+                        string nc = Encoding.UTF32.GetString(utf32bytes[(i+4)..(i+8)]);
+                        uint nunicode = BitConverter.ToUInt32(utf32bytes[(i+4)..(i+8)]);
+                        Glyph g;
+                        if (nc == "{") {
+                            i += 4;
+                            g = Program.Font.GetGlyph(nunicode, charsize, bold, 0);
+                        } else {
+                            g = Program.Font.GetGlyph(unicode, charsize, bold, 0);
+                        }
+                        float waveY = waveAmplitude * (float)Math.Sin(Math.PI * waveFrequency * sec + Math.PI * wavePhase);
+                        Sprite sprite = new Sprite(texture);
+                        sprite.TextureRect = g.TextureRect;
+                        sprite.Position = position + g.Bounds.Position + new Vector2f(0, waveY);
+                        sprite.Color = color;
+                        window.Draw(sprite);
+                        position.X += g.Advance;
+                        wavePhase -= wavePhaseIncrement;
+                        break;
+                    }
                     case "{": {
                         string cj = "{";
                         int j = i+4;
