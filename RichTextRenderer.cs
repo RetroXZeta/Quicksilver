@@ -130,6 +130,9 @@ namespace Quicksilver {
                                     if (!valid) { t = Program.DefaultGlyph; }
                                     Sprite sprite = new Sprite(t);
                                     sprite.Position = position + new Vector2f(2, 4) - new Vector2f(0, t!.Size.Y) + new Vector2f(0, waveY);
+                                    if (t.Size.Y > charsize) {
+                                        sprite.Scale = charsize / t.Size.Y * new Vector2f(1, 1);
+                                    }
                                     sprite.Color = color;
                                     window.Draw(sprite);
                                     position.X += t!.Size.X + 4;
