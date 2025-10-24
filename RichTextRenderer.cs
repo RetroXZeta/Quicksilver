@@ -20,9 +20,39 @@ namespace Quicksilver {
             float waveFrequency = 1.0f;
             float wavePhase = 0.0f;
             float wavePhaseIncrement = 0.0f;
+            float shakeAmplitude = 0.0f;
+            Random shakeRandom = new Random(0);
 
             TimeSpan time = DateTime.UtcNow - Program.BootTime;
             double sec = time.TotalSeconds;
+
+            // Draws a text character, not to be confused with the "glyph" command which draws an arbitrary texture.
+            void drawGlyph(Glyph g) {
+                float waveY = waveAmplitude * (float)Math.Sin(Math.PI * waveFrequency * sec + Math.PI * wavePhase);
+                Vector2f shakePos = shakeAmplitude * 2 * new Vector2f(shakeRandom.NextSingle() - 0.5f, shakeRandom.NextSingle() - 0.5f);
+                Sprite sprite = new Sprite(texture);
+                sprite.TextureRect = g.TextureRect;
+                sprite.Position = position + g.Bounds.Position + new Vector2f(0, waveY) + shakePos;
+                sprite.Color = color;
+                window.Draw(sprite);
+                position.X += g.Advance;
+                wavePhase -= wavePhaseIncrement;
+            }
+
+            // Draws an arbitrary texture.
+            void drawTexture(Texture t) {
+                float waveY = waveAmplitude * (float)Math.Sin(Math.PI * waveFrequency * sec + Math.PI * wavePhase);
+                Vector2f shakePos = shakeAmplitude * 2 * new Vector2f(shakeRandom.NextSingle() - 0.5f, shakeRandom.NextSingle() - 0.5f);
+                Sprite sprite = new Sprite(t);
+                sprite.Position = position + new Vector2f(2, 4) - new Vector2f(0, t.Size.Y) + new Vector2f(0, waveY) + shakePos;
+                if (t.Size.Y > charsize) {
+                    sprite.Scale = charsize / t.Size.Y * new Vector2f(1, 1);
+                }
+                sprite.Color = color;
+                window.Draw(sprite);
+                position.X += t.Size.X + 4;
+                wavePhase -= wavePhaseIncrement;
+            }
 
             position.Y += linespace;
             for (int i = 0; i < utf32bytes.Length; i += 4) {
@@ -44,14 +74,7 @@ namespace Quicksilver {
                         } else {
                             g = Program.Font.GetGlyph(unicode, charsize, bold, 0);
                         }
-                        float waveY = waveAmplitude * (float)Math.Sin(Math.PI * waveFrequency * sec + Math.PI * wavePhase);
-                        Sprite sprite = new Sprite(texture);
-                        sprite.TextureRect = g.TextureRect;
-                        sprite.Position = position + g.Bounds.Position + new Vector2f(0, waveY);
-                        sprite.Color = color;
-                        window.Draw(sprite);
-                        position.X += g.Advance;
-                        wavePhase -= wavePhaseIncrement;
+                        drawGlyph(g);
                         break;
                     }
                     case "{": {
@@ -121,48 +144,38 @@ namespace Quicksilver {
                                     }
                                     break;
                                 }
+                                case "shake": {
+                                    if (args.Length != 2) { break; }
+                                    bool valid = float.TryParse(args[0], out float samp);
+                                    valid = float.TryParse(args[1], out float sfreq) ? valid : false;
+                                    if (valid) {
+                                        shakeAmplitude = samp;
+                                        sfreq = sfreq == 0 ? 1 : sfreq;
+                                        shakeRandom = new Random((int)(sec/sfreq)); // This ensures that the random x and y values given for each character only change whenever sfreq seconds have passed.
+                                        // Pre-randomize a little more, just for good measure.
+                                        for (int k = 0; k < shakeRandom.Next() % 10; ++k) { shakeRandom.NextSingle(); }
+                                    }
+                                    break;
+                                }
                                 case "glyph": {
                                     if (args.Length != 1) { break; }
-                                    float waveY = waveAmplitude * (float)Math.Sin(Math.PI * waveFrequency * sec + Math.PI * wavePhase);
                                     Texture? t;
                                     bool valid = Program.Glyphs.TryGetValue(args[0], out t);
-                                    if (!valid) { t = Program.DefaultGlyph; }
-                                    Sprite sprite = new Sprite(t);
-                                    sprite.Position = position + new Vector2f(2, 4) - new Vector2f(0, t!.Size.Y) + new Vector2f(0, waveY);
-                                    if (t.Size.Y > charsize) {
-                                        sprite.Scale = charsize / t.Size.Y * new Vector2f(1, 1);
-                                    }
-                                    sprite.Color = color;
-                                    window.Draw(sprite);
-                                    position.X += t!.Size.X + 4;
-                                    wavePhase -= wavePhaseIncrement;
+                                    if (!valid || t == null) { t = Program.DefaultGlyph; }
+                                    drawTexture(t!);
                                     break;
                                 }
                             }
                         } else {
                             // If it's unclosed, just draw it as a normal character.
-                            float waveY = waveAmplitude * (float)Math.Sin(Math.PI * waveFrequency * sec + Math.PI * wavePhase);
                             Glyph g = Program.Font.GetGlyph(unicode, charsize, bold, 0);
-                            Sprite sprite = new Sprite(texture);
-                            sprite.TextureRect = g.TextureRect;
-                            sprite.Position = position + g.Bounds.Position + new Vector2f(0, waveY);
-                            sprite.Color = color;
-                            window.Draw(sprite);
-                            position.X += g.Advance;
-                            wavePhase -= wavePhaseIncrement;
+                            drawGlyph(g);
                         }
                         break;
                     }
                     default: {
-                        float waveY = waveAmplitude * (float)Math.Sin(Math.PI * waveFrequency * sec + Math.PI * wavePhase);
                         Glyph g = Program.Font.GetGlyph(unicode, charsize, bold, 0);
-                        Sprite sprite = new Sprite(texture);
-                        sprite.TextureRect = g.TextureRect;
-                        sprite.Position = position + g.Bounds.Position + new Vector2f(0, waveY);
-                        sprite.Color = color;
-                        window.Draw(sprite);
-                        position.X += g.Advance;
-                        wavePhase -= wavePhaseIncrement;
+                        drawGlyph(g);
                         break;
                     }
                 }
