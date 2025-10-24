@@ -38,7 +38,7 @@ namespace Quicksilver {
                         string nc = Encoding.UTF32.GetString(utf32bytes[(i+4)..(i+8)]);
                         uint nunicode = BitConverter.ToUInt32(utf32bytes[(i+4)..(i+8)]);
                         Glyph g;
-                        if (nc == "{") {
+                        if (nc == "{" || nc == "\\") {
                             i += 4;
                             g = Program.Font.GetGlyph(nunicode, charsize, bold, 0);
                         } else {
@@ -102,7 +102,6 @@ namespace Quicksilver {
                                 }
                                 case "bold": {
                                     if (args.Length >= 2) { break; }
-                                    if (args.Length == 0) { bold = !bold; break; }
                                     switch (args[0]) {
                                         case "true": bold = true; break;
                                         case "false": bold = false; break;
